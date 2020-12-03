@@ -1,7 +1,7 @@
 # 概述
 本项目主要用于爬虫基础复习:
 1. 爬虫技术: aiohttp多协程爬取以及多个协程如何协调任务
-2. `python` 相关技术: pdfkit(html转换为pdf)
+2. python相关技术: pdfkit(html转换为pdf)
 # 项目
 项目主要分为两部分:
 1. 根据后台请求接口,获取专栏html内容
