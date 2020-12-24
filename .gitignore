@@ -1,7 +1,6 @@
 .idea/
 *.html
 *.pdf
-*.htm
 venv/
 300分钟搞定数据结构与算法/htmltopdf.py
 32个Java面试必考点/htmltopdf.py
@@ -10,3 +9,10 @@ venv/
 Java 性能优化实战 21 讲/htmltopdf.py
 Go 微服务实战 38 讲/htmltopdf.py
 Flutter快学快用24讲/htmltopdf.py
+300分钟吃透分布式缓存/
+300分钟搞定数据结构与算法/
+32个Java面试必考点/
+52讲轻松搞定网络爬虫/
+Flutter快学快用24讲/
+Go 微服务实战 38 讲/
+Java 性能优化实战 21 讲/
