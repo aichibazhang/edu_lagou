@@ -12,19 +12,20 @@ logging.basicConfig(level=logging.INFO,
 LESSION_URL = 'https://gate.lagou.com/v1/neirong/kaiwu/getCourseLessons?courseId={id}'
 INDEX_URL = 'https://gate.lagou.com/v1/neirong/kaiwu/getCourseLessonDetail?lessonId={id}'
 # 这里修改你要爬取的课程id
-COURSE_ID = 524
+COURSE_ID = 614
 CONCURRENCY = 5
 
 loop = asyncio.get_event_loop()
 
 headers = {
+    'Host': 'gate.lagou.com',
     'Connection': 'keep-alive',
     'Pragma': 'no-cache',
     'Cache-Control': 'no-cache',
     'Accept': 'application/json, text/plain, */*',
     'Authorization': '78112f17c205afa411b8a3e263eea5823bedce8eaa6aa72c',
     'X-L-REQ-HEADER': '{deviceType:1}',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36',
     'Origin': 'https://kaiwu.lagou.com',
     'Sec-Fetch-Site': 'same-site',
     'Sec-Fetch-Mode': 'cors',
@@ -32,7 +33,7 @@ headers = {
     'Referer': 'https://kaiwu.lagou.com/',
     'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-    'Cookie': '_ga=GA1.2.1714163244.1538059906; user_trace_token=20180927225145-dab89676-c264-11e8-bb60-5254005c3644; LGUID=20180927225145-dab8a02a-c264-11e8-bb60-5254005c3644; LG_HAS_LOGIN=1; smidV2=2020111122270356b5b6cd773f00293fe5fb053a36623f00458f122e11db710; Hm_lvt_4233e74dff0ae5bd0a3d81c6ccf756e6=1606828510,1607003514; EDUJSESSIONID=ABAAAECABCAAACD344C1AF76C767BE66B43ED09D946A768; sensorsdata2015session=%7B%7D; thirdDeviceIdInfo=%5B%7B%22channel%22%3A1%2C%22thirdDeviceId%22%3A%22WHJMrwNw1k/HPjaKNsnlIZv6ZQotyvf/drhQtqxiT6jPQGQsAR0CjO3XODL+BMdk6eSAbJLQn+rcPSHuda01Lp1ZxMuAkxN7UdCW1tldyDzmQI99+chXEiqtnvsEsctU89lCUKKcsmkTaFO8webhNijYmmmXo8LlTkQE5YcNLqNriNYPfoOP/bkLXs3lyVHOLjpFi1fMuCUOoVkUyJZv2Iu8Vg+5pExYXJH8yRa14SUFlqFrp73IJ2awagfm4WRvXSBMZJRjFRB4%3D1487582755342%22%7D%2C%7B%22channel%22%3A2%2C%22thirdDeviceId%22%3A%22140%23+ZSomSZzzzWkJQo23zsz4pN8s7O4a5SadIMMKK0nWWBwEarmoNVY/jHm0qwW3x9/UVTLB6hqzznUBi3FE+MzzqI0IHoqlQzx2DD3VthqzFcQL28+lpYazDrbV2QNoyksONdOHaU+P6Ps3PAH+fwYQpUxu4wbHGO0lVX8/GUrz8XnheVyjeV9lGAFaMfcRI5BS/lFmyXERlvGz0Fv5EAzHyNMQv21hZAfC5XR7V6XhUZpQQhFiWuIIPh3dr5BcEqAPA+zv6a+Fj9kU2nZcq6BTLquOIWUB5CFQu/d7LxUvHoa8LeqxivTsElEVzfBlFvOx5K8HLFO1UNucC9m286vGfHtdtw97H1U+jVZiBGqQzne4fdMJq0QUmvBNk2Kc5EUOzswYH1ODGZl0B4B8wNQEfdwKJ9cnHR9tF3XNopcrnPTcck1dQ2q8SUQFpyzOBv4TukDJmD5JCGXvSEBAoaLEdg7H9juW7nlLiuFmdY0zuOYCZzqSY9c6QXXTxG0AvyWI1fL/lVGHk6XBxQ+2ulPSeUEMrzcnNNUO9HLZSwvebK0Iv2ZSPomMaHqiBsKsCGhJ85tIYJ17vd0w34rTGvRmJDJFeBwLYnKQIzMrVj4GN82EYom9oV4vg9VXEeDS9ZIXIshtNoSALi7f4pX3RE0j8mRONbRYI2gtf2VpqRk6PV5pzJ+Yv9WeJVYD2KUpIam/HfTYowu+rhLSOs7pVd2R94yYX5SiQMqEtoqvnabCSr04+bYLz5tNQHiCn7WJjtmgyGfD9H7xz%3D%3D%2Cundefined%22%7D%5D; user-finger=6a422ca24ce4fd2a38dc3c9e4de2f993; LG_LOGIN_USER_ID=660f275181528b4876682ca2830a99aff957b602dd6eb6a9; _putrc=34C749CE011C29AB; login=true; unick=%E9%9F%A9%E5%86%AC%E5%86%AC; kw_login_authToken="LA2xTzMoiiKDuBrLy86tuWK3+qxKDbIkM8oCtF7xNfUlDyC4e2D/mKilUttTiDUOnxMXYeF3IrCJpIoOt6u3Pa9QR2iHB4kZBP/pnsgYkLsLu5t+vaVG6B8p0O+KrvNqQ2e/O5ZnqfU19+Hq/OHMW0i0DFZlvtKu0iv1IvxMtyJ4rucJXOpldXhUiavxhcCELWDotJ+bmNVwmAvQCptcy5e7czUcjiQC32Lco44BMYXrQ+AIOfEccJKHpj0vJ+ngq/27aqj1hWq8tEPFFjdnxMSfKgAnjbIEAX3F9CIW8BSiMHYmPBt7FDDY0CCVFICHr2dp5gQVGvhfbqg7VzvNsw=="; gate_login_token=78112f17c205afa411b8a3e263eea5823bedce8eaa6aa72c; X_HTTP_TOKEN=85dfc7b21b5ddd19724588116178b2be389f7d4d5f; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%229862931%22%2C%22%24device_id%22%3A%22168e171fe80a1e-07f627ced1772c-9393265-2073600-168e171fe8131c%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%2C%22%24latest_utm_source%22%3A%22baidujava%22%2C%22%24latest_utm_medium%22%3A%22sspc%22%2C%22%24latest_utm_term%22%3A%22java3224%22%2C%22%24os%22%3A%22Windows%22%2C%22%24browser%22%3A%22Chrome%22%2C%22%24browser_version%22%3A%2287.0.4280.88%22%7D%2C%22first_id%22%3A%221774bdb42b820a-033a9b9f39c28e-c791039-1327104-1774bdb42b9954%22%7D; JSESSIONID=D0A728FD39457933D4E929999A452528'
+    'Cookie': 'user_trace_token=20200910155152-128ed0c4-7d62-4ab7-a328-b735a82bc645; _ga=GA1.2.701951005.1599724320; LGUID=20200910155200-c3c0808f-8405-49c5-9497-689db3715dcf; smidV2=20201029105115a053f5d945964ea0124bfa6885bf193c0012bd57fd5ee8580; LG_HAS_LOGIN=1; LG_LOGIN_USER_ID=92502b49abb2cb140468b882372b15e6d5538b226f3100c4; Hm_lvt_4233e74dff0ae5bd0a3d81c6ccf756e6=1612248973,1612248980,1612757652,1612757657; index_location_city=%E5%8C%97%E4%BA%AC; thirdDeviceIdInfo=%5B%7B%22channel%22%3A1%2C%22thirdDeviceId%22%3A%22WHJMrwNw1k/FsYDZ/e1ZnoqaCMTk88AhJ2Zdl50fRFVQn/da97WD57RD5QRi6Ukv5O7zpgnOXyy423zADhTlc18EPJtx4NipwdCW1tldyDzmQI99+chXEijsI77PdA/Na9lCUKKcsmkTaFO8webhNijYmmmXo8LlTkQE5YcNLqNriNYPfoOP/bs07fxsVzj6+X2EFB6G47hrP6KRdcW7dhziM5iSMAfwctJkh7lbVV6ugar+5yYEDgMjYdxE5oTt6F10/rPYNoNw%3D1487582755342%22%7D%2C%7B%22channel%22%3A2%2C%22thirdDeviceId%22%3A%22140%23rLXo4U2JzzWUKQo2+bsu4pN8s7O2giCtmRWl2dhK7zGwyuX097L3x/W265txT6iY4Q0Blp1zz/j0YO9MtFzxJLjr73h/zzrb22U3lp1xzBsSV2EqlaOz2PD+Vo13q/II1wba7X53zINjumva2UiX/wP1W3q00r/vzaaz8UY56S6viHk8Kx0YkFLiU+SeFcO+yvx7fqPiOjjSxiAo/+n8IG9xcUPKp8pBCvHEiz9vA0D2maeLmJn9KJ8UD8z63/J2YLbVTLWU3pJ7PlX8+OLJoobIRnYOa76Da9ONTafBFWhDpF2kAVf/IRC2ICzs7otk69L31TX1HzynwiCHMYTKT6N9A1PHSyxf5iUB+zppz/Pq8IuYhaHGRZFA1iirl0YL1Vl4kAs1p2OGB0GTZ8j6kk7TutfJ5C+Mb8i/aj6vn92qPhKslrSRqxqqDTpax2SPKeHar3PSWjYeS2CyAFjHX5MYkJ0qudfqk6OiCiUEYqnA/K6+jvgeamqWsG11t8Mze5WPkuPDrUhacmJo2YKWDC4rHm+aihtOCg7sRlT7FkyhEOgk00mGsGl45D0noJ0P5uxXBKd6Zb4brUlRL0QpGSXhBdY72LjC7m0YngvTr/fEy8y2MWQe4QBl/BG1hfVeKIr5UWm0uRJgj94j0pUkdHRvC48AipVXIttHop5gxpvGlRbicV9pl59KND2mukv4QMrt2eTLWkK0/kGBNV0LVGfC2nftkyGzImIhiAViTwncTdjqzQF%3D%2Cundefined%22%7D%5D; user-finger=10ba38f39916c0d1aca2c11b71bef6f9; sensorsdata2015session=%7B%7D; EDUJSESSIONID=ABAAAECABCAAACD8AC2CC9C7D150208F93ACDF30DD25ACD; kw_login_authToken="C6vYOj+pY1/pzPzrMoHDprODkAe13XVZuik2O7VH9x4jGiFZJehBaW54jzOd/jIS7MMBnziX6w4+obd5gIbzlO7R72v/YDrvqR/Mj9X+jwBvzh5kot0EAMDFyOg8Z6hnbQ4u9yH4OdLV/W8gYZQLtqdUowZsQaoOT3vv3RwoW5l4rucJXOpldXhUiavxhcCELWDotJ+bmNVwmAvQCptcy5e7czUcjiQC32Lco44BMYXrQ+AIOfEccJKHpj0vJ+ngq/27aqj1hWq8tEPFFjdnxMSfKgAnjbIEAX3F9CIW8BSiMHYmPBt7FDDY0CCVFICHr2dp5gQVGvhfbqg7VzvNsw=="; gate_login_token=78112f17c205afa411b8a3e263eea5823bedce8eaa6aa72c; JSESSIONID=C141578EABE5AF17E440FB69C89283E6; X_HTTP_TOKEN=5b23063f5e550b676372604161e333a53ccfabe386; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%229862931%22%2C%22%24device_id%22%3A%2217476fff4d166a-0bdc1337c84b9a-f7b1332-1445906-17476fff4d2cda%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%2C%22%24latest_utm_source%22%3A%22baidujava%22%2C%22%24latest_utm_medium%22%3A%22sspc%22%2C%22%24latest_utm_term%22%3A%22java7380%22%2C%22%24latest_utm_campaign%22%3A%22distribution%22%2C%22%24os%22%3A%22Windows%22%2C%22%24browser%22%3A%22Chrome%22%2C%22%24browser_version%22%3A%2288.0.4324.182%22%7D%2C%22first_id%22%3A%221777fd0bcb25d8-0f3f32dbcc0355-33e3567-1445906-1777fd0bcb36f5%22%7D'
 }
 
 
@@ -41,6 +42,7 @@ class Spider(object):
     def __init__(self):
         self.session = aiohttp.ClientSession()
         self.semaphore = asyncio.Semaphore(CONCURRENCY)
+
 
     def scrape_lession_content(self, url):
         url = url.format(id=COURSE_ID)
