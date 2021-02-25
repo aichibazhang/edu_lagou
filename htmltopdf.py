@@ -51,8 +51,11 @@ class HtmlToPdf(object):
             print(file_name)
             if os.path.exists(file_name):
                 os.remove(file_name)
-            htmls = sorted(html_files, key=cmp_to_key(self.file_cmp))
-            pdfkit.from_file(htmls, file_name, options=self.options, cover='statement.htm', cover_first=True)
+            htmls = sorted(html_files, key=lambda x: int(str.split(os.path.split(x)[1], '.')[0]))
+            try:
+                pdfkit.from_file(htmls, file_name, options=self.options, cover='statement.htm', cover_first=True)
+            except IOError:
+                print("Error: 获取部分网页失败")
 
 
 if __name__ == '__main__':
