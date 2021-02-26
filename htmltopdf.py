@@ -32,20 +32,11 @@ class HtmlToPdf(object):
                     fileNames.append(root + '\\' + f)
         return fileNames
 
-    @classmethod
-    def file_cmp(cls, file1, file2: str) -> int:
-        if int(str.split(os.path.split(file1)[1], '.')[0]) > int(str.split(os.path.split(file2)[1], '.')[0]):
-            return 1
-        elif int(str.split(os.path.split(file1)[1], '.')[0]) > int(str.split(os.path.split(file2)[1], '.')[0]):
-            return -1
-        else:
-            return 0
-
-    def html_pdf(self, html_path):
+    def html_pdf(self, html_path, pdf_paths):
         str1 = os.path.realpath(html_path)
         str2 = '\\'
         pdf_path = str1[str1.rindex(str2) + 1:]
-        if pdf_path != '已更新完' and pdf_path != '未更新完':
+        if pdf_path in pdf_paths:
             html_files = self.get_html(html_path)
             file_name = 'pdf/' + pdf_path + '.pdf'
             print(file_name)
@@ -61,5 +52,6 @@ class HtmlToPdf(object):
 if __name__ == '__main__':
     html_to_pdf = HtmlToPdf()
     dir_list = html_to_pdf.get_html_dir()
+    pdf_paths = ['Webpack原理与实践', '玩转 Serverless 架构']
     for html_path in dir_list:
-        html_to_pdf.html_pdf(html_path)
+        html_to_pdf.html_pdf(html_path, pdf_paths)

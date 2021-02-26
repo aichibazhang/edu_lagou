@@ -36,23 +36,22 @@ headers = {
 }
 
 
+def lessions_list():
+    response = requests.get(url=COURSE_LIST_URL, headers=headers)
+    lessions_all = []
+    if response is not None:
+        course_list = response.json()['content']['contentCardList']
+        for courses in course_list:
+            if courses['cardType'] == 201:
+                lessions_all = courses['courseList']
+    return lessions_all
+
+
 class Spider(object):
 
     def __init__(self):
         self.session = aiohttp.ClientSession()
         self.semaphore = asyncio.Semaphore(CONCURRENCY)
-        open("unreleased.txt", 'w').close()
-        open("downloads.txt", 'w').close()
-
-    def lessions_list(self):
-        response = requests.get(url=COURSE_LIST_URL, headers=headers)
-        lessions_all = []
-        if response is not None:
-            course_list = response.json()['content']['contentCardList']
-            for courses in course_list:
-                if courses['cardType'] == 201:
-                    lessions_all = courses['courseList']
-        return lessions_all
 
     def scrape_lession_content(self, url, course_id):
         url = url.format(id=course_id)
@@ -114,36 +113,65 @@ class Spider(object):
             data = {'id': int(content['id']), 'theme': str(content['theme']),
                     'content': str(content['textContent'])}
             contents.append(data)
-        downloaded_txt = 'downloads.txt'
+
         output_path = ''
         if lession_status:
             output_path = '/' + '已更新完/' + file_path
         else:
             f = 'unreleased.txt'
-            with open(f, "a") as file:  # 只需要将之前的”w"改为“a"即可，代表追加内容
+            with open(f, "a") as file:
                 file.write(str(courceId) + "\n")
             output_path = '/' + '未更新完/' + file_path + '（未更新完）'
-        print(output_path)
-        # if not os.path.exists(output_path):
-        #     scrape_detail_tasks = [asyncio.ensure_future(self.write_html(str(content['id']) + '.html',
-        #                                                                  content['theme'], content['content'],
-        #                                                                  output_path))
-        #                            for content in contents]
-        with open(downloaded_txt, "a") as file:  # 只需要将之前的”w"改为“a"即可，代表追加内容
-            file.write(str(courceId) + "\n")
-        # await asyncio.wait(scrape_detail_tasks)
+
+        scrape_detail_tasks = [asyncio.ensure_future(self.write_html(str(content['id']) + '.html',
+                                                                     content['theme'], content['content'],
+                                                                     output_path))
+                               for content in contents]
+        await asyncio.wait(scrape_detail_tasks)
         await self.session.close()
+
+    @classmethod
+    def crawl_all(cls):
+        # 全量爬取
+        lessions = lessions_list()
+        pool = Pool(processes=5)
+        for lession in lessions:
+            print(lession)
+            if lession['tag'] != '上新优惠':
+                lession_id = lession['id']
+                spider = Spider()
+                pool.apply_async(loop.run_until_complete(spider.main(lession_id)))
+                print('======> 开始爬取专栏：{}，编号：{} <======'.format(lession['title'], lession_id))
+        pool.join()
+        pool.close()
+
+    @classmethod
+    def crawl_increase(cls):
+        # 增量爬取
+        unreleases = set([line.rstrip('\n') for line in open('unreleased.txt', 'r')])
+        lessions = list(unreleases | set(
+            [line.rstrip('\n') for line in open('downloads.txt', 'r')]))
+        pool = Pool(processes=5)
+        open("unreleased.txt", 'w').close()
+        for lession_id in lessions:
+            spider = Spider()
+            print('======> 开始爬取编号：{} <======'.format(lession_id))
+            pool.apply_async(loop.run_until_complete(spider.main(lession_id)))
+        pool.close()
+        pool.join()
+        open("downloads.txt", 'w').close()
+        updated_unreleased_course = set([line.rstrip('\n') for line in open('unreleased.txt', 'r')])
+        print('部分专栏由未完成变为已完成{}'.format(list(unreleases - updated_unreleased_course)))
+        unreleased_courses = list(unreleases & updated_unreleased_course)
+        open("unreleased.txt", 'w').close()
+        with open('unreleased.txt', "a") as file:
+            for unreleased_course in unreleased_courses:
+                file.write(str(unreleased_course) + "\n")
 
 
 if __name__ == '__main__':
     spider = Spider()
-    lessions = spider.lessions_list()
-    pool = Pool(processes=5)
-    for lession in lessions:
-        if lession['tag'] != '上新优惠':
-            lession_id = lession['id']
-            spider = Spider()
-            pool.apply_async(loop.run_until_complete(spider.main(lession_id)))
-            print('======> 开始爬取专栏：{}，编号：{} <======'.format(lession['title'], lession_id))
-    pool.close()
-    pool.join()
+    # 全量爬取
+    # spider.crawl_all()
+    # 增量爬取
+    spider.crawl_increase()
