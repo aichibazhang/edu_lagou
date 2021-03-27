@@ -25,5 +25,5 @@
 - [x] 增量爬取专栏
 - [x] 更新未更新完得专栏并记录由未更新完变为更新完的专栏
 # 项目运行示例
-![动态演示](https://video-aiqiyi-1253626516.cos.ap-beijing.myqcloud.com/edu.gif)
+![process.png](https://video-aiqiyi-1253626516.cos.ap-beijing.myqcloud.com/edu.gif)
 
