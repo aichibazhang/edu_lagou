@@ -32,11 +32,13 @@ class HtmlToPdf(object):
                     fileNames.append(root + '\\' + f)
         return fileNames
 
-    def html_pdf(self, html_path, pdf_paths):
+    # def html_pdf(self, html_path,dir_paths):
+    def html_pdf(self, html_path):
         str1 = os.path.realpath(html_path)
         str2 = '\\'
         pdf_path = str1[str1.rindex(str2) + 1:]
-        if pdf_path in pdf_paths:
+        # for pdf_path in dir_paths:
+        if pdf_path != '已更新完' and pdf_path != '未更新完':
             html_files = self.get_html(html_path)
             file_name = 'pdf/' + pdf_path + '.pdf'
             print(file_name)
@@ -52,6 +54,7 @@ class HtmlToPdf(object):
 if __name__ == '__main__':
     html_to_pdf = HtmlToPdf()
     dir_list = html_to_pdf.get_html_dir()
-    pdf_paths = ['Webpack原理与实践', '玩转 Serverless 架构']
+    # pdf_paths=['专栏1','专栏2']
     for html_path in dir_list:
-        html_to_pdf.html_pdf(html_path, pdf_paths)
+        html_to_pdf.html_pdf(html_path)
+        # html_to_pdf.html_pdf(html_path,pdf_paths)
