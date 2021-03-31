@@ -29,4 +29,4 @@
 
 # 购买会员链接
 
-![购买.imge](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a4860ed92e974300ba1a53522b25a631~tplv-k3u1fbpfcp-watermark.image)
+![购买.image](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a4860ed92e974300ba1a53522b25a631~tplv-k3u1fbpfcp-watermark.image)
