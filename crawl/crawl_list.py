@@ -40,9 +40,9 @@ def lessions_subscription():
         if not lession['hasBuy']:
             pay_response = requests.get(url=pay_url.format(id=lession['id']), headers=headers)
             if lession['tag'] != '上新优惠':
-                if pay_response.json()['content']['drawStatus']:
-                    with open('downloads.txt', "a") as file:
-                        file.write(str(lession['id']) + "\n")
+                if pay_response.json()['content'] is None:
+                    print('课程', lession['title'], 'vip 暂时无法订购！！！')
+                else:
                     print('课程', lession['title'], '订购成功！！！')
             else:
                 lession_size = lession_size - 1
