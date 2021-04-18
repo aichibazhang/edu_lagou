@@ -43,6 +43,8 @@ def lessions_subscription():
                 if pay_response.json()['content'] is None:
                     print('课程', lession['title'], 'vip 暂时无法订购！！！')
                 else:
+                    with open('downloads.txt', "a") as file:
+                        file.write(str(lession['id']) + "\n")
                     print('课程', lession['title'], '订购成功！！！')
             else:
                 lession_size = lession_size - 1
